@@ -1,0 +1,378 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkManagers_ANM01_name": {
+            "defaultValue": "ANM01",
+            "type": "String"
+        },
+        "virtualNetworks_T01_vnet_H01_externalid": {
+            "defaultValue": "/subscriptions/d36bdbd9-6c6e-4810-b285-e967fa50f312/resourceGroups/T01-S01-R1/providers/Microsoft.Network/virtualNetworks/T01-vnet-H01",
+            "type": "String"
+        },
+        "virtualNetworks_T01_vnet_p01_externalid": {
+            "defaultValue": "/subscriptions/d36bdbd9-6c6e-4810-b285-e967fa50f312/resourceGroups/T01-S01-R1/providers/Microsoft.Network/virtualNetworks/T01-vnet-p01",
+            "type": "String"
+        },
+        "virtualNetworks_T02_vnet_np01_externalid": {
+            "defaultValue": "/subscriptions/321cdeb1-a2ea-4844-bfa2-6377189ea08d/resourceGroups/T02-S01-R1/providers/Microsoft.Network/virtualNetworks/T02-vnet-np01",
+            "type": "String"
+        },
+        "virtualNetworks_T01_vnet_np01_externalid": {
+            "defaultValue": "/subscriptions/716ed186-5bf4-4851-859c-e106ce393cea/resourceGroups/T01-S02-R2/providers/Microsoft.Network/virtualNetworks/T01-vnet-np01",
+            "type": "String"
+        },
+        "virtualNetworks_T02_vnet_p01_externalid": {
+            "defaultValue": "/subscriptions/321cdeb1-a2ea-4844-bfa2-6377189ea08d/resourceGroups/T02-S01-R1/providers/Microsoft.Network/virtualNetworks/T02-vnet-p01",
+            "type": "String"
+        },
+        "virtualNetworks_T01_vnet_np01_externalid_1": {
+            "defaultValue": "/subscriptions/d36bdbd9-6c6e-4810-b285-e967fa50f312/resourceGroups/T01-S01-R1/providers/Microsoft.Network/virtualNetworks/T01-vnet-np01",
+            "type": "String"
+        },
+        "virtualNetworks_T01_vnet_p02_externalid": {
+            "defaultValue": "/subscriptions/716ed186-5bf4-4851-859c-e106ce393cea/resourceGroups/T01-S02-R2/providers/Microsoft.Network/virtualNetworks/T01-vnet-p02",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkManagers",
+            "apiVersion": "2024-03-01",
+            "name": "[parameters('networkManagers_ANM01_name')]",
+            "location": "swedencentral",
+            "properties": {
+                "networkManagerScopes": {
+                    "managementGroups": [],
+                    "subscriptions": [
+                        "/subscriptions/716ed186-5bf4-4851-859c-e106ce393cea",
+                        "/subscriptions/d36bdbd9-6c6e-4810-b285-e967fa50f312"
+                    ]
+                },
+                "networkManagerScopeAccesses": [
+                    "Connectivity",
+                    "SecurityAdmin",
+                    "Routing"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/networkGroups",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/Consolidation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "memberType": "VirtualNetwork"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/networkGroups",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/T02')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "memberType": "VirtualNetwork"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/routingConfigurations",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/10.21.1.4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/routingConfigurations",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/MainRouter')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/scopeConnections",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/GuestGmailANVM')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "tenantId": "ed813ec3-241b-4add-a835-965338b3537b",
+                "resourceId": "/subscriptions/321cdeb1-a2ea-4844-bfa2-6377189ea08d"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/BlockRDPAll')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "applyOnNetworkIntentPolicyBasedServices": [
+                    "None"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/SecurityRule')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "applyOnNetworkIntentPolicyBasedServices": [
+                    "None"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/connectivityConfigurations",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/HubSPoke')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]",
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+            ],
+            "properties": {
+                "connectivityTopology": "HubAndSpoke",
+                "hubs": [
+                    {
+                        "resourceType": "Microsoft.Network/virtualNetworks",
+                        "resourceId": "[parameters('virtualNetworks_T01_vnet_H01_externalid')]"
+                    }
+                ],
+                "appliesToGroups": [
+                    {
+                        "networkGroupId": "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]",
+                        "groupConnectivity": "DirectlyConnected",
+                        "useHubGateway": "False",
+                        "isGlobal": "True"
+                    }
+                ],
+                "deleteExistingPeering": "False",
+                "isGlobal": "False"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/Consolidation/ANM_6vwlxe5073')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "resourceId": "[parameters('virtualNetworks_T01_vnet_p01_externalid')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/Consolidation/ANM_cq4sxhuh')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "resourceId": "[parameters('virtualNetworks_T02_vnet_np01_externalid')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/Consolidation/ANM_r4ow01ato5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "resourceId": "[parameters('virtualNetworks_T01_vnet_np01_externalid')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/Consolidation/ANM_tgyil3vclm')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "resourceId": "[parameters('virtualNetworks_T02_vnet_p01_externalid')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/Consolidation/ANM_w9kzjz4jrx')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "resourceId": "[parameters('virtualNetworks_T01_vnet_np01_externalid_1')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/Consolidation/ANM_zo9g6t1ynv')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "resourceId": "[parameters('virtualNetworks_T01_vnet_p02_externalid')]"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/MainRouter/CentralRouting')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/routingConfigurations', parameters('networkManagers_ANM01_name'), 'MainRouter')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]",
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+            ],
+            "properties": {
+                "appliesTo": [
+                    {
+                        "networkGroupId": "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+                    }
+                ],
+                "disableBgpRoutePropagation": "True"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/10.21.1.4/vNetRouting')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/routingConfigurations', parameters('networkManagers_ANM01_name'), '10.21.1.4')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]",
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+            ],
+            "properties": {
+                "appliesTo": [
+                    {
+                        "networkGroupId": "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+                    }
+                ],
+                "disableBgpRoutePropagation": "True"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/10.21.1.4/vNetRouting/10.21.0.0')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/routingConfigurations/ruleCollections', parameters('networkManagers_ANM01_name'), '10.21.1.4', 'vNetRouting')]",
+                "[resourceId('Microsoft.Network/networkManagers/routingConfigurations', parameters('networkManagers_ANM01_name'), '10.21.1.4')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "destination": {
+                    "type": "AddressPrefix",
+                    "destinationAddress": "10.21.0.0/16"
+                },
+                "nextHop": {
+                    "nextHopType": "VnetLocal"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/10.21.1.4/vNetRouting/172.18.0.0')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/routingConfigurations/ruleCollections', parameters('networkManagers_ANM01_name'), '10.21.1.4', 'vNetRouting')]",
+                "[resourceId('Microsoft.Network/networkManagers/routingConfigurations', parameters('networkManagers_ANM01_name'), '10.21.1.4')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "destination": {
+                    "type": "AddressPrefix",
+                    "destinationAddress": "172.18.0.0/16"
+                },
+                "nextHop": {
+                    "nextHopType": "VnetLocal"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections/rules",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/MainRouter/CentralRouting/AzureFirewall')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/routingConfigurations/ruleCollections', parameters('networkManagers_ANM01_name'), 'MainRouter', 'CentralRouting')]",
+                "[resourceId('Microsoft.Network/networkManagers/routingConfigurations', parameters('networkManagers_ANM01_name'), 'MainRouter')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "properties": {
+                "destination": {
+                    "type": "AddressPrefix",
+                    "destinationAddress": "0.0.0.0/0"
+                },
+                "nextHop": {
+                    "nextHopType": "VirtualAppliance",
+                    "nextHopAddress": "192.168.2.4"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/BlockRDPAll/BlockRDPEmergency')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations', parameters('networkManagers_ANM01_name'), 'BlockRDPAll')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]",
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+            ],
+            "properties": {
+                "appliesToGroups": [
+                    {
+                        "networkGroupId": "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/SecurityRule/rdpEmergencyBlock')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations', parameters('networkManagers_ANM01_name'), 'SecurityRule')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]",
+                "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+            ],
+            "properties": {
+                "appliesToGroups": [
+                    {
+                        "networkGroupId": "[resourceId('Microsoft.Network/networkManagers/networkGroups', parameters('networkManagers_ANM01_name'), 'Consolidation')]"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
+            "apiVersion": "2024-03-01",
+            "name": "[concat(parameters('networkManagers_ANM01_name'), '/SecurityRule/rdpEmergencyBlock/BlockRDPEmergency')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections', parameters('networkManagers_ANM01_name'), 'SecurityRule', 'rdpEmergencyBlock')]",
+                "[resourceId('Microsoft.Network/networkManagers/securityAdminConfigurations', parameters('networkManagers_ANM01_name'), 'SecurityRule')]",
+                "[resourceId('Microsoft.Network/networkManagers', parameters('networkManagers_ANM01_name'))]"
+            ],
+            "kind": "Custom"
+        }
+    ]
+}
