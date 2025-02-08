@@ -1,3 +1,0 @@
-#hello it's a test code
-
-nano ./ddd
