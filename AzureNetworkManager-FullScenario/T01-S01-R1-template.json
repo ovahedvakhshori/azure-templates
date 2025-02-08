@@ -65,6 +65,17 @@
         "schedules_shutdown_computevm_t01_vm_np01_name": {
             "defaultValue": "shutdown-computevm-t01-vm-np01",
             "type": "String"
+        },
+              "adminUsername": {
+        "type": "string",
+        "metadata": {
+          "description": "Admin username"
+        }
+      },
+      "adminPassword": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Admin password"
         }
     },
     "variables": {},
@@ -305,8 +316,8 @@
                 },
                 "osProfile": {
                     "computerName": "[parameters('virtualMachines_T01_vm_np01_name')]",
-                    "adminUsername": "testvm",
-                    "adminPassword": "Vahed@09124403412",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true,
@@ -381,8 +392,8 @@
                 },
                 "osProfile": {
                     "computerName": "[parameters('virtualMachines_T01_vm_p01_name')]",
-                    "adminUsername": "testvm",
-                    "adminPassword": "Vahed@09124403412",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true,

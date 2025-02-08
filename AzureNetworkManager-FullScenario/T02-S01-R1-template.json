@@ -37,6 +37,11 @@
         "networkSecurityGroups_T02_vm_np01_nsg_name": {
             "defaultValue": "T02-vm-np01-nsg",
             "type": "String"
+        },
+      "adminPassword": {
+        "type": "securestring",
+        "metadata": {
+          "description": "Admin password"
         }
     },
     "variables": {},
@@ -192,8 +197,8 @@
                 },
                 "osProfile": {
                     "computerName": "[parameters('virtualMachines_T02_vm_np01_name')]",
-                    "adminUsername": "testvm",
-                    "adminPassword": "Vahed@09124403412",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true,
@@ -268,8 +273,8 @@
                 },
                 "osProfile": {
                     "computerName": "[parameters('virtualMachines_T02_vm_p01_name')]",
-                    "adminUsername": "testvm",
-                    "adminPassword": "Vahed@09124403412",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
                     "windowsConfiguration": {
                         "provisionVMAgent": true,
                         "enableAutomaticUpdates": true,
