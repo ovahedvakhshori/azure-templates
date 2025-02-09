@@ -38,11 +38,19 @@
             "defaultValue": "T02-vm-np01-nsg",
             "type": "String"
         },
+              "adminUsername": {
+        "type": "string",
+        "metadata": {
+          "description": "Admin username"
+        }
+      },
       "adminPassword": {
         "type": "securestring",
         "metadata": {
           "description": "Admin password"
         }
+      }
+
     },
     "variables": {},
     "resources": [
